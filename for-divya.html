@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Divya 💜</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:   #000010;
+      --bg-purple: #1a0533;
+      --pink:      #ff6ab0;
+      --purple:    #9b3dff;
+      --light-purple: #c87aff;
+      --gold:      #ffe066;
+      --text-soft: #f4c8ff;
+      --text-muted: rgba(180,120,255,0.55);
+      --blue:      #80d4ff;
+      --orange:    #ff9b3d;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 60% 40%, var(--bg-purple) 0%, var(--bg-deep) 70%);
+      font-family: 'Quicksand', sans-serif;
+      color: var(--text-soft);
+      user-select: none;
+    }
+
+    /* ─── Star Field ───────────────────────────────────────────────── */
+    #stars {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0) 70%);
+      animation: twinkle var(--dur, 4s) ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes twinkle {
+      from { opacity: var(--min-op, 0.2); transform: scale(1); }
+      to   { opacity: var(--max-op, 0.9); transform: scale(1.6); }
+    }
+
+    /* ─── Screens ──────────────────────────────────────────────────── */
+    .screen {
+      position: fixed; inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .screen.active { display: flex; }
+
+    /* ─── Screen 1: Title ──────────────────────────────────────────── */
+    #screen-title {
+      text-align: center;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
+    #screen-title h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 7vw, 62px);
+      font-weight: 600;
+      color: var(--text-soft);
+      letter-spacing: 0.04em;
+      animation: glowPulse 3s ease-in-out infinite;
+      line-height: 1.2;
+    }
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 18px #c87aff88, 0 0 40px #9b3dff55, 0 0 80px #9b3dff22; }
+      50%       { text-shadow: 0 0 28px #c87affcc, 0 0 60px #9b3dff99, 0 0 120px #ff6ab044; }
+    }
+    #screen-title p {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(15px, 2.5vw, 20px);
+      color: rgba(200, 150, 255, 0.85);
+      max-width: 480px;
+      line-height: 1.7;
+      font-weight: 500;
+    }
+    .btn-begin {
+      margin-top: 0.5rem;
+      padding: 14px 38px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 24px #9b3dff66, 0 4px 20px rgba(255,106,176,0.4);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn-begin:hover {
+      transform: scale(1.06) translateY(-2px);
+      box-shadow: 0 0 38px #9b3dffaa, 0 6px 28px rgba(255,106,176,0.6);
+    }
+    .btn-begin:active { transform: scale(0.97); }
+
+    /* ─── Screen 2: Hunt ───────────────────────────────────────────── */
+    #screen-hunt {
+      position: fixed; inset: 0;
+      display: none;
+      z-index: 10;
+    }
+    #screen-hunt.active { display: block; }
+
+    /* Progress dots */
+    #progress-bar {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 20;
+    }
+    .prog-dot {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      border: 2px solid rgba(180,120,255,0.4);
+      background: rgba(255,255,255,0.04);
+      transition: all 0.4s ease;
+    }
+    .prog-dot.lit {
+      background: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 0 10px var(--gold), 0 0 20px #ffe06688;
+    }
+
+    /* Counter */
+    #counter {
+      position: fixed;
+      top: 16px; right: 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(200,150,255,0.7);
+      z-index: 20;
+      letter-spacing: 0.04em;
+    }
+
+    /* Hint */
+    #hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      font-weight: 500;
+      z-index: 20;
+      white-space: nowrap;
+    }
+
+    /* Hunt area */
+    #hunt-area {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* Floating objects */
+    .hunt-obj {
+      position: absolute;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(10, 0, 30, 0.72);
+      border: 1.5px solid rgba(180, 100, 255, 0.45);
+      box-shadow: 0 0 14px rgba(155, 61, 255, 0.45), 0 0 28px rgba(155, 61, 255, 0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      cursor: pointer;
+      animation: floatUpDown var(--float-dur, 5s) ease-in-out infinite alternate;
+      animation-delay: var(--float-delay, 0s);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      z-index: 15;
+    }
+    .hunt-obj:hover {
+      transform: scale(1.25);
+      box-shadow: 0 0 24px rgba(155,61,255,0.85), 0 0 50px rgba(200,122,255,0.5);
+    }
+    .hunt-obj.found {
+      opacity: 0.28;
+      pointer-events: none;
+      cursor: default;
+    }
+    @keyframes floatUpDown {
+      from { transform: translateY(0px); }
+      to   { transform: translateY(-18px); }
+    }
+    .hunt-obj:hover { transform: scale(1.25) translateY(0) !important; }
+
+    /* ─── Overlay ──────────────────────────────────────────────────── */
+    #overlay {
+      position: fixed; inset: 0;
+      background: rgba(5, 0, 20, 0.88);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+    #overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .msg-card {
+      background: linear-gradient(145deg, #1a0533cc 0%, #0d0020cc 100%);
+      border: 1.5px solid rgba(180, 80, 255, 0.55);
+      box-shadow: 0 0 40px rgba(155,61,255,0.4), 0 0 80px rgba(155,61,255,0.15);
+      border-radius: 24px;
+      padding: 2.8rem 2.4rem;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+      animation: cardPop 0.35s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes cardPop {
+      from { transform: scale(0.82) translateY(20px); opacity: 0; }
+      to   { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .msg-emoji { font-size: 52px; line-height: 1; }
+    .msg-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(18px, 3vw, 24px);
+      color: var(--text-soft);
+      line-height: 1.65;
+    }
+    .btn-close {
+      padding: 11px 32px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 18px #9b3dff66;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn-close:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 28px #9b3dffaa;
+    }
+
+    /* ─── Screen 3: Finale ─────────────────────────────────────────── */
+    #screen-finale {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      gap: 1.6rem;
+      z-index: 50;
+    }
+    #screen-finale.active { display: flex; }
+    #finale-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 12vw, 96px);
+      font-weight: 600;
+      color: var(--text-soft);
+      letter-spacing: 0.06em;
+      animation: glowPulse 3s ease-in-out infinite;
+      line-height: 1.1;
+    }
+    #finale-msg {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(17px, 3vw, 24px);
+      color: rgba(220, 170, 255, 0.9);
+      max-width: 520px;
+      line-height: 1.75;
+    }
+
+    /* ─── Fireworks ────────────────────────────────────────────────── */
+    .firework {
+      position: fixed;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 200;
+      animation: burst 1.4s cubic-bezier(0.12,0.72,0.35,1) forwards;
+    }
+    @keyframes burst {
+      0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+      60%  { opacity: 0.8; }
+      100% { transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) scale(0.3); opacity: 0; }
+    }
+
+    /* ─── Subtle nebula overlay ────────────────────────────────────── */
+    #nebula {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse 55% 35% at 20% 80%, rgba(90,20,200,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 20%, rgba(200,60,180,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 25% at 50% 50%, rgba(30,0,80,0.18) 0%, transparent 70%);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Star field -->
+<div id="stars"></div>
+<!-- Nebula -->
+<div id="nebula"></div>
+
+<!-- ──────────────────────────── SCREEN 1 ──────────────────── -->
+<section id="screen-title" class="screen active">
+  <h1>✦ For Divya ✦</h1>
+  <p>I hid 10 secret reasons why you are the most special person in my universe. Can you find them all? 🌌</p>
+  <button class="btn-begin" id="btn-begin">Begin the Hunt ✦</button>
+</section>
+
+<!-- ──────────────────────────── SCREEN 2 ──────────────────── -->
+<section id="screen-hunt">
+  <div id="progress-bar"></div>
+  <div id="counter">0 / 10 found</div>
+  <div id="hunt-area"></div>
+  <div id="hint">✦ tap the glowing objects to find hidden messages ✦</div>
+</section>
+
+<!-- ──────────────────────────── OVERLAY ─────────────────────── -->
+<div id="overlay">
+  <div class="msg-card">
+    <div class="msg-emoji" id="overlay-emoji"></div>
+    <p class="msg-text" id="overlay-text"></p>
+    <button class="btn-close" id="btn-close">carry on ✦</button>
+  </div>
+</div>
+
+<!-- ──────────────────────────── SCREEN 3 ──────────────────── -->
+<section id="screen-finale" class="screen">
+  <div id="finale-name">✦ Divya ✦</div>
+  <p id="finale-msg">You are the most special thing in my universe. I love you so much, my princess. Every star up there knows — I am so glad I met you. 💜</p>
+</section>
+
+<script>
+/* ──── Star generation ──────────────────────────────────────── */
+(function generateStars() {
+  const container = document.getElementById('stars');
+  const count = 180;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.4 + 0.6;
+    const x = Math.random() * 100, y = Math.random() * 100;
+    const dur = (Math.random() * 4 + 2.5).toFixed(2);
+    const delay = (Math.random() * 6).toFixed(2);
+    const minOp = (Math.random() * 0.25 + 0.08).toFixed(2);
+    const maxOp = (Math.random() * 0.5 + 0.5).toFixed(2);
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${x}%; top:${y}%;
+      --dur:${dur}s; --delay:${delay}s;
+      --min-op:${minOp}; --max-op:${maxOp};
+      animation-delay:${delay}s;
+    `;
+    container.appendChild(s);
+  }
+})();
+
+/* ──── Data ─────────────────────────────────────────────────── */
+const OBJECTS = [
+  {
+    emoji: '⭐', label: 'Star',
+    msg: 'I love you so much, my princess. You shine brighter than every star in this sky.',
+    // position: top-left area
+    pos: { left: '8%', top: '18%' },
+    floatDur: '5.2s', floatDelay: '0s'
+  },
+  {
+    emoji: '🌙', label: 'Moon',
+    msg: 'Even on my darkest nights, you are the moon that lights up everything for me.',
+    pos: { left: '82%', top: '12%' },
+    floatDur: '6.0s', floatDelay: '0.7s'
+  },
+  {
+    emoji: '🌸', label: 'Flower',
+    msg: 'I love you so much, Madam Ji — and I will always listen to you, I promise. 💜',
+    pos: { left: '45%', top: '8%' },
+    floatDur: '4.8s', floatDelay: '1.3s'
+  },
+  {
+    emoji: '💌', label: 'Letter',
+    msg: 'If I could write you a letter every day for the rest of my life, it still wouldn\'t be enough to say how much I love you.',
+    pos: { left: '12%', top: '55%' },
+    floatDur: '5.6s', floatDelay: '0.3s'
+  },
+  {
+    emoji: '🦋', label: 'Butterfly',
+    msg: 'You gave me butterflies the moment I met you, and they never went away.',
+    pos: { left: '75%', top: '48%' },
+    floatDur: '4.5s', floatDelay: '1.8s'
+  },
+  {
+    emoji: '✨', label: 'Sparkle',
+    msg: 'I am so glad the universe decided to put us in the same world. Meeting you changed everything.',
+    pos: { left: '35%', top: '38%' },
+    floatDur: '5.9s', floatDelay: '0.9s'
+  },
+  {
+    emoji: '🔮', label: 'Orb',
+    msg: 'I love you so much, Madam Ji — wherever you lead, I\'ll follow with my whole heart.',
+    pos: { left: '60%', top: '72%' },
+    floatDur: '5.1s', floatDelay: '2.1s'
+  },
+  {
+    emoji: '🌺', label: 'Bloom',
+    msg: 'You make every ordinary day feel like something magical, my princess. I love you so much.',
+    pos: { left: '22%', top: '78%' },
+    floatDur: '6.3s', floatDelay: '0.5s'
+  },
+  {
+    emoji: '💫', label: 'Comet',
+    msg: 'I love you so much — more than I know how to say, more than any words I could find.',
+    pos: { left: '88%', top: '70%' },
+    floatDur: '4.7s', floatDelay: '1.5s'
+  },
+  {
+    emoji: '🪐', label: 'Planet',
+    msg: 'You are my favourite place in the entire universe. I am so, so glad I met you, Divya.',
+    pos: { left: '50%', top: '60%' },
+    floatDur: '5.4s', floatDelay: '2.5s'
+  }
+];
+
+/* ──── State ─────────────────────────────────────────────────── */
+let found = 0;
+const foundSet = new Set();
+
+/* ──── Build hunt screen ─────────────────────────────────────── */
+function buildHunt() {
+  const area = document.getElementById('hunt-area');
+  const progressBar = document.getElementById('progress-bar');
+
+  // Progress dots
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'prog-dot';
+    dot.id = `dot-${i}`;
+    progressBar.appendChild(dot);
+  }
+
+  // Hunt objects
+  OBJECTS.forEach((obj, i) => {
+    const el = document.createElement('div');
+    el.className = 'hunt-obj';
+    el.id = `obj-${i}`;
+    el.setAttribute('aria-label', obj.label);
+    el.textContent = obj.emoji;
+    el.style.left = obj.pos.left;
+    el.style.top  = obj.pos.top;
+    el.style.setProperty('--float-dur', obj.floatDur);
+    el.style.setProperty('--float-delay', obj.floatDelay);
+    el.style.animationDelay = obj.floatDelay;
+
+    el.addEventListener('click', () => revealMessage(i));
+    area.appendChild(el);
+  });
+}
+
+/* ──── Reveal message ────────────────────────────────────────── */
+function revealMessage(index) {
+  if (foundSet.has(index)) return;
+  const obj = OBJECTS[index];
+  document.getElementById('overlay-emoji').textContent = obj.emoji;
+  document.getElementById('overlay-text').textContent  = obj.msg;
+  document.getElementById('overlay').classList.add('active');
+  // Mark as found on close
+  document.getElementById('btn-close').onclick = () => closeOverlay(index);
+}
+
+function closeOverlay(index) {
+  document.getElementById('overlay').classList.remove('active');
+  if (!foundSet.has(index)) {
+    foundSet.add(index);
+    found++;
+    // Mark object found
+    document.getElementById(`obj-${index}`).classList.add('found');
+    // Light dot
+    document.getElementById(`dot-${foundSet.size - 1}`).classList.add('lit');
+    // Update counter
+    document.getElementById('counter').textContent = `${found} / 10 found`;
+    // Check finale
+    if (found === 10) {
+      setTimeout(triggerFinale, 600);
+    }
+  }
+}
+
+/* ──── Finale ────────────────────────────────────────────────── */
+function triggerFinale() {
+  document.getElementById('screen-hunt').classList.remove('active');
+  document.getElementById('screen-hunt').style.display = 'none';
+  document.getElementById('progress-bar').style.display = 'none';
+  document.getElementById('counter').style.display = 'none';
+  document.getElementById('hint').style.display = 'none';
+
+  const finale = document.getElementById('screen-finale');
+  finale.style.display = 'flex';
+  finale.classList.add('active');
+
+  launchFireworks();
+}
+
+/* ──── Fireworks ─────────────────────────────────────────────── */
+function launchFireworks() {
+  const colors = ['#ff6ab0','#c87aff','#ffe066','#80d4ff','#ff9b3d','#ffffff'];
+  const origins = Array.from({length: 5}, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight
+  }));
+
+  origins.forEach((origin, oi) => {
+    setTimeout(() => {
+      for (let i = 0; i < 30; i++) {
+        const fw = document.createElement('div');
+        fw.className = 'firework';
+        const angle  = (Math.PI * 2 * i) / 30 + (Math.random() - 0.5) * 0.4;
+        const dist   = 80 + Math.random() * 140;
+        const dx     = Math.cos(angle) * dist;
+        const dy     = Math.sin(angle) * dist;
+        const color  = colors[Math.floor(Math.random() * colors.length)];
+        fw.style.cssText = `
+          left:${origin.x}px; top:${origin.y}px;
+          background:${color};
+          box-shadow: 0 0 8px ${color}, 0 0 16px ${color}88;
+          --dx:${dx}; --dy:${dy};
+          animation-duration:${(1.0 + Math.random() * 0.8).toFixed(2)}s;
+          animation-delay:${(Math.random() * 0.25).toFixed(2)}s;
+        `;
+        document.body.appendChild(fw);
+        fw.addEventListener('animationend', () => fw.remove());
+      }
+    }, oi * 280);
+  });
+
+  // Repeat burst
+  setTimeout(() => launchFireworks(), 2200);
+}
+
+/* ──── Navigation ────────────────────────────────────────────── */
+document.getElementById('btn-begin').addEventListener('click', () => {
+  document.getElementById('screen-title').classList.remove('active');
+  document.getElementById('screen-title').style.display = 'none';
+
+  const hunt = document.getElementById('screen-hunt');
+  hunt.style.display = 'block';
+  hunt.classList.add('active');
+});
+
+/* ──── Init ──────────────────────────────────────────────────── */
+buildHunt();
+</script>
+</body>
+</html>
